@@ -17,6 +17,7 @@ class AppWidget extends StatelessWidget {
             fontFamily: 'MontserratAlternates'
           ),
         ),
+        fontFamily: 'MontserratAlternates',
       ),
       initialRoute: '/',
       routes: {
