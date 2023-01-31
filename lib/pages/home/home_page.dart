@@ -13,7 +13,6 @@ class _HomePageState extends State<HomePage> {
 
   List<ProdutoModel>? produtos;
   bool sucessConection = false;
-
   @override
   void initState() {
     // TODO: implement initState
@@ -24,7 +23,9 @@ class _HomePageState extends State<HomePage> {
   getListaProduto()async{
     produtos = await ProdutoService().getProdutos();
     if(produtos != null){
-      sucessConection = true;
+      setState(() {
+        sucessConection = true;
+      });
     }
   }
   @override
@@ -34,67 +35,102 @@ class _HomePageState extends State<HomePage> {
         leading: Icon(Icons.menu),
         title: Text('Loja de Produtos'),
       ),
-      body: SizedBox(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        child: Container(
-          margin: EdgeInsets.all(20),
-          child: Visibility(
-            replacement: CircularProgressIndicator(),
-            visible: sucessConection,
-            child: ListView.builder(
-              itemCount: produtos?.length,
-              itemBuilder: (context, index) {
-                return Column(
+      body: Visibility(
+        visible: sucessConection,
+        replacement: CircularProgressIndicator(),
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          child: Container(
+            margin: EdgeInsets.all(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Card(
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                        borderRadius: BorderRadius.circular(10)
-                      ),
-                      elevation: 7,
-                      child: Column(
+                    Text('Disponivel: W\$ 368'),
+                    ElevatedButton(
+                      onPressed: (){
+                        Navigator.of(context).pushReplacementNamed('cadastro');
+                      }, 
+                      child: Text('Adicionar'))
+                  ],
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: produtos?.length,
+                    itemBuilder: (context, index) {
+                      return Column(
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                          Card(
+                            shape: RoundedRectangleBorder(
+                              side: BorderSide(
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                              borderRadius: BorderRadius.circular(10)
+                            ),
+                            elevation: 7,
+                            child: Column(
                               children: [
-                                Flexible(
-                                  flex: 1,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(30),
-                                      color: Colors.amber
-                                    ),
-                                    child: Image.asset('assets/images/fogao.jpeg'),
-                                  ),
-                                ),
-                                Flexible(
-                                  flex: 1,
-                                  child: Column(
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                     children: [
-                                      Text('${produtos?[index].nome}', style: Theme.of(context).textTheme.titleLarge),
-                                      Text('${produtos?[index].descricao}')
+                                      Flexible(
+                                        flex: 1,
+                                        child: Image.asset('assets/images/fogao.jpeg'),
+                                      ),
+                                      Flexible(
+                                        flex: 1,
+                                        fit: FlexFit.tight,
+                                        child: Column(
+                                          children: [
+                                            Text('${produtos?[index].nome}', style: Theme.of(context).textTheme.titleLarge),
+                                            Text('${produtos?[index].descricao}', textAlign: TextAlign.center,),
+                                          ],
+                                        ),
+                                      ),
                                     ],
                                   ),
-                                )
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(bottom: 10, right: 20, left: 20),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    color: Colors.green[400]
+                                  ),
+                                  width: double.infinity,
+                                  child: TextButton(
+                                    onPressed: () => showDialog(context: context, builder: (context) {
+                                      return AlertDialog(
+                                        title: Text('Confirma a aquisição deste produto?'),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: ()=> Navigator.pop(context), 
+                                            child: Text('Cancelar')
+                                          ),
+                                          TextButton(
+                                            onPressed: (){}, 
+                                            child: Text('Sim')
+                                          ),
+                                        ],
+                                      );
+                                    },), 
+                                    child: Text('Adquirir por: w\$${produtos?[index].valor.toStringAsFixed(2)}', style: TextStyle(color: Colors.white),)
+                                  ),
+                                ),
                               ],
                             ),
                           ),
-                          ElevatedButton(
-                            onPressed: (){}, 
-                            child: Text('Adquirir por: w\$ 368')
-                          ),
                         ],
-                      ),
-                    ),
-                  ],
-                );
-              },
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
           ),
         ),
