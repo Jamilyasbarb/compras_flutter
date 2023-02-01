@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.compras_vita_health">
+    <uses-permission android:name="android.permission.INTERNET" />
    <application
         android:label="compras_vita_health"
         android:name="${applicationName}"
