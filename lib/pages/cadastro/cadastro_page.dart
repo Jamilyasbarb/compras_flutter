@@ -1,6 +1,6 @@
+import 'package:compras_vita_health/controllers/produto_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:provider/provider.dart';
 
 class CadastroPage extends StatefulWidget {
   const CadastroPage({super.key});
@@ -10,9 +10,14 @@ class CadastroPage extends StatefulWidget {
 }
 
 class _CadastroPageState extends State<CadastroPage> {
+
+  final _keyForm = GlobalKey<FormState>();
+  int id = 55;
   @override
   Widget build(BuildContext context) {
+    final controller = context.watch<ProdutoController>();
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text('Novo Produto'),
         leading: Icon(Icons.menu),
@@ -32,7 +37,9 @@ class _CadastroPageState extends State<CadastroPage> {
                 child: Icon(Icons.camera_alt),
               ),
               Expanded(
+                flex: 2,
                 child: Form(
+                  key: _keyForm,
                   child: Column(
                     children: [
                       TextFormField(
@@ -40,6 +47,11 @@ class _CadastroPageState extends State<CadastroPage> {
                           labelText: 'Nome',
                           border: OutlineInputBorder(),
                         ),
+                        validator: (value) {
+                          if(value != null && value != ''){
+                            controller.nome = value;
+                          }
+                        },
                       ),
                       Container(height: 10,),
                       TextFormField(
@@ -47,6 +59,11 @@ class _CadastroPageState extends State<CadastroPage> {
                           labelText: 'Descrição',
                           border: OutlineInputBorder(),
                         ),
+                        validator: (value) {
+                          if(value != null && value != ''){
+                            controller.descricao = value;
+                          }
+                        },
                       ),
                       Container(height: 10,),
                       TextFormField(
@@ -54,17 +71,37 @@ class _CadastroPageState extends State<CadastroPage> {
                           labelText: 'Valor em WsCoins',
                           border: OutlineInputBorder(),
                         ),
+                        validator: (value) {
+                          if(value == null || value == ''){
+                            return 'Campo obrigatório';
+                          }else{
+                            controller.valor = double.parse(value);
+                          }
+                        },
                       ),
                     ],
                   ),
                 ),
               ),
-              Container(
-                width: double.infinity,
-                color: Theme.of(context).colorScheme.primary,
-                child: TextButton(
-                  onPressed: null,
-                  child: Text('Cadastrar'),
+              Expanded(
+                flex: 1,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      color: Theme.of(context).colorScheme.primary,
+                      child: TextButton(
+                        onPressed: (){
+                          if(_keyForm.currentState!.validate()){
+                            Navigator.of(context).pushReplacementNamed('/');
+                          }
+                          controller.addProduto();
+                        },
+                        child: Text('Cadastrar', style: TextStyle(color: Colors.white),),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
