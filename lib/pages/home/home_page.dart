@@ -1,6 +1,10 @@
+import 'package:compras_vita_health/controllers/produto_controller.dart';
 import 'package:compras_vita_health/models/produto_model.dart';
+import 'package:compras_vita_health/models/usuario_model.dart';
 import 'package:compras_vita_health/services/produto_service.dart';
+import 'package:compras_vita_health/services/usuario_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -8,28 +12,43 @@ class HomePage extends StatefulWidget {
   @override
   State<HomePage> createState() => _HomePageState();
 }
-
 class _HomePageState extends State<HomePage> {
-
   List<ProdutoModel>? produtos;
+  UsuarioModel? usuario;
   bool sucessConection = false;
+  bool cadastrado = false;
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getListaProduto();
+    getUsuario();
   }
 
   getListaProduto()async{
     produtos = await ProdutoService().getProdutos();
     if(produtos != null){
+      for (var i = 0; i < produtos!.length; i++) {
+        listaProdutos.add(produtos![i]);
+      }
       setState(() {
         sucessConection = true;
       });
     }
   }
+  getUsuario()async{
+    usuario = await UsuarioService().getUsuario();
+    if(usuario != null){
+      setState(() {
+        sucessConection = true;
+      });
+    }
+  }
+  
   @override
   Widget build(BuildContext context) {
+  final controller = context.watch<ProdutoController>();
+  print(listaProdutos.isEmpty);
     return Scaffold(
       appBar: AppBar(
         leading: Icon(Icons.menu),
@@ -52,14 +71,17 @@ class _HomePageState extends State<HomePage> {
                     Text('Disponivel: W\$ 368'),
                     ElevatedButton(
                       onPressed: (){
-                        Navigator.of(context).pushReplacementNamed('cadastro');
+                        Navigator.of(context).pushNamed('cadastro');
                       }, 
                       child: Text('Adicionar'))
                   ],
                 ),
-                Expanded(
+                listaProdutos.isEmpty ? 
+                Container(color: Colors.purple, 
+                  child:Text('jajdi'),
+                ):Expanded(
                   child: ListView.builder(
-                    itemCount: produtos?.length,
+                    itemCount: listaProdutos.length,
                     itemBuilder: (context, index) {
                       return Column(
                         children: [
@@ -88,8 +110,8 @@ class _HomePageState extends State<HomePage> {
                                         fit: FlexFit.tight,
                                         child: Column(
                                           children: [
-                                            Text('${produtos?[index].nome}', style: Theme.of(context).textTheme.titleLarge),
-                                            Text('${produtos?[index].descricao}', textAlign: TextAlign.center,),
+                                            Text('${listaProdutos[index].nome}', style: Theme.of(context).textTheme.titleLarge),
+                                            Text('${listaProdutos[index].descricao}', textAlign: TextAlign.center,),
                                           ],
                                         ),
                                       ),
@@ -119,7 +141,7 @@ class _HomePageState extends State<HomePage> {
                                         ],
                                       );
                                     },), 
-                                    child: Text('Adquirir por: w\$${produtos?[index].valor.toStringAsFixed(2)}', style: TextStyle(color: Colors.white),)
+                                    child: Text('Adquirir por: w\$${listaProdutos[index].valor.toStringAsFixed(2)}', style: TextStyle(color: Colors.white),)
                                   ),
                                 ),
                               ],
@@ -128,8 +150,7 @@ class _HomePageState extends State<HomePage> {
                         ],
                       );
                     },
-                  ),
-                ),
+                  )),
               ],
             ),
           ),
