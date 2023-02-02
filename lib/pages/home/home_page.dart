@@ -14,7 +14,8 @@ class HomePage extends StatefulWidget {
 }
 class _HomePageState extends State<HomePage> {
   List<ProdutoModel>? produtos;
-  UsuarioModel? usuario;
+  List<UsuarioModel>? usuario;
+  // UsuarioModel? usuario;
   bool sucessConection = false;
   bool cadastrado = false;
 
@@ -110,7 +111,7 @@ class _HomePageState extends State<HomePage> {
                                         fit: FlexFit.tight,
                                         child: Column(
                                           children: [
-                                            Text('${listaProdutos[index].nome}', style: Theme.of(context).textTheme.titleLarge),
+                                            Text('${listaProdutos[index].nome}${usuario?[0].nome}', style: Theme.of(context).textTheme.titleLarge),
                                             Text('${listaProdutos[index].descricao}', textAlign: TextAlign.center,),
                                           ],
                                         ),

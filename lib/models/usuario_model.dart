@@ -1,7 +1,7 @@
 import 'package:compras_vita_health/models/produto_model.dart';
 import 'dart:convert';
 
-List<ProdutoModel> usuarioFromJson(String str) => List<ProdutoModel>.from(json.decode(str).map((x) => UsuarioModel.fromJson(x)));
+List<UsuarioModel> usuarioFromJson(String str) => List<UsuarioModel>.from(json.decode(str).map((x) => UsuarioModel.fromJson(x)));
 
 class UsuarioModel{
   int idusuario;
@@ -31,15 +31,27 @@ class UsuarioModel{
   });
 
   factory UsuarioModel.fromJson(Map<String, dynamic> json){
+    print('chegou no model ${json}');
+    // json['idusuario'];
     return UsuarioModel(
-      idusuario: json['idusuario'], 
-      nome: json['nome'], 
-      email: json['email'], 
-      senha: json['senha'], 
-      celular: json['celular'], 
-      usuarionome: json['usuarionome'], 
-      foto: json['foto'], 
-      produtos: List<ProdutoModel>.from(json['produtos']?.map((x) => ProdutoModel.fromJson(x)))
+      idusuario: json['idusuario'] ?? 0, 
+      nome: json['nome'] ?? '', 
+      email: json['email']?? '', 
+      senha: json['senha'] ?? '', 
+      celular: json['celular'] ?? '', 
+      usuarionome: json['usuarionome'] ?? '', 
+      foto: json['foto'] ?? '', 
+      produtos: List<ProdutoModel>.from(json['produtos']?.map((x) => ProdutoModel.fromJson(x))  ?? [])
     );
   }
+
+  Map<String, dynamic> toJson() =>{
+    "idusuario": idusuario,
+     "nome" :nome,
+     "email" :  email,
+     "senha" :  senha,
+     "celular" :  celular,
+     "usuarionome" :  usuarionome,
+     "foto" :  foto,
+  };
 }

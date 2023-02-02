@@ -51,6 +51,7 @@ class _CadastroPageState extends State<CadastroPage> {
                           if(value != null && value != ''){
                             controller.nome = value;
                           }
+                           return null;
                         },
                       ),
                       Container(height: 10,),
@@ -63,6 +64,7 @@ class _CadastroPageState extends State<CadastroPage> {
                           if(value != null && value != ''){
                             controller.descricao = value;
                           }
+                          return null;
                         },
                       ),
                       Container(height: 10,),
@@ -77,6 +79,7 @@ class _CadastroPageState extends State<CadastroPage> {
                           }else{
                             controller.valor = double.parse(value);
                           }
+                          return null;
                         },
                       ),
                     ],
@@ -86,7 +89,7 @@ class _CadastroPageState extends State<CadastroPage> {
               Expanded(
                 flex: 1,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(
                       width: double.infinity,
@@ -100,6 +103,12 @@ class _CadastroPageState extends State<CadastroPage> {
                         },
                         child: Text('Cadastrar', style: TextStyle(color: Colors.white),),
                       ),
+                    ),
+                    TextButton(
+                      onPressed: (){
+                        Navigator.of(context).pushReplacementNamed('/');
+                      },
+                      child: Text('Voltar',),
                     ),
                   ],
                 ),
