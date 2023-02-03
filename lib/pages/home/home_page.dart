@@ -32,7 +32,6 @@ class _HomePageState extends State<HomePage> {
     produtos = await ProdutoService().getProdutos();
     if(produtos != null){
       setState(() {
-        
         listaProdutos = produtos!;
         sucessConection = true;
       });
