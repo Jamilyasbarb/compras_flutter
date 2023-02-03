@@ -16,23 +16,24 @@ class _HomePageState extends State<HomePage> {
   List<ProdutoModel>? produtos;
   List<UsuarioModel>? usuario;
   // UsuarioModel? usuario;
+  List<ProdutoModel> produtosCadastrados = [];
   bool sucessConection = false;
-  bool cadastrado = false;
+  List<bool> cadastrado = [];
 
   @override
   void initState() {
     super.initState();
     getListaProduto();
     getUsuario();
+    cadastrado = List<bool>.filled(listaProdutos.length, false);
   }
 
   getListaProduto()async{
     produtos = await ProdutoService().getProdutos();
     if(produtos != null){
-      for (var i = 0; i < produtos!.length; i++) {
-        listaProdutos.add(produtos![i]);
-      }
       setState(() {
+        
+        listaProdutos = produtos!;
         sucessConection = true;
       });
     }
@@ -45,10 +46,21 @@ class _HomePageState extends State<HomePage> {
       });
     }
   }
+
+  usuarioCadastrou(){
+    for (var i = 0; i < listaProdutos.length; i++) {
+      if(listaProdutos[i].usuarioIdusuario == usuario![0].idusuario){
+        cadastrado[i] = true;
+      }
+    }
+  }
+
   
   @override
   Widget build(BuildContext context) {
+
   final controller = context.watch<ProdutoController>();
+
   print(listaProdutos.isEmpty);
     return Scaffold(
       appBar: AppBar(
@@ -80,10 +92,11 @@ class _HomePageState extends State<HomePage> {
                 listaProdutos.isEmpty ? 
                 Container(color: Colors.purple, 
                   child:Text('jajdi'),
-                ):Expanded(
+                ): Expanded(
                   child: ListView.builder(
                     itemCount: listaProdutos.length,
                     itemBuilder: (context, index) {
+                      print(usuarioCadastrou());
                       return Column(
                         children: [
                           Card(
@@ -111,7 +124,7 @@ class _HomePageState extends State<HomePage> {
                                         fit: FlexFit.tight,
                                         child: Column(
                                           children: [
-                                            Text('${listaProdutos[index].nome}${usuario?[0].nome}', style: Theme.of(context).textTheme.titleLarge),
+                                            Text('${listaProdutos[index].nome}', style: Theme.of(context).textTheme.titleLarge),
                                             Text('${listaProdutos[index].descricao}', textAlign: TextAlign.center,),
                                           ],
                                         ),
@@ -119,7 +132,7 @@ class _HomePageState extends State<HomePage> {
                                     ],
                                   ),
                                 ),
-                                Container(
+                                cadastrado[index] ? Container(
                                   margin: EdgeInsets.only(bottom: 10, right: 20, left: 20),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(20),
@@ -143,6 +156,31 @@ class _HomePageState extends State<HomePage> {
                                       );
                                     },), 
                                     child: Text('Adquirir por: w\$${listaProdutos[index].valor.toStringAsFixed(2)}', style: TextStyle(color: Colors.white),)
+                                  ),
+                                ) : Container(
+                                  margin: EdgeInsets.only(bottom: 10, right: 20, left: 20),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    color: Colors.red
+                                  ),
+                                  width: double.infinity,
+                                  child: TextButton(
+                                    onPressed: () => showDialog(context: context, builder: (context) {
+                                      return AlertDialog(
+                                        title: Text('Confirma a aquisição deste produto?'),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: ()=> Navigator.pop(context), 
+                                            child: Text('Cancelar')
+                                          ),
+                                          TextButton(
+                                            onPressed: (){}, 
+                                            child: Text('Sim')
+                                          ),
+                                        ],
+                                      );
+                                    },), 
+                                    child: Text('Exluir por: w\$${listaProdutos[index].valor.toStringAsFixed(2)}', style: TextStyle(color: Colors.white),)
                                   ),
                                 ),
                               ],

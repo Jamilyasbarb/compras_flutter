@@ -1,13 +1,9 @@
 import 'package:compras_vita_health/models/produto_model.dart';
+import 'package:compras_vita_health/models/usuario_model.dart';
+import 'package:compras_vita_health/services/usuario_service.dart';
 import 'package:flutter/cupertino.dart';
 
-List<ProdutoModel> listaProdutos = [
-  ProdutoModel(idproduto: 0, nome: 'Geladeira', descricao: 'Gela muito bem, é de inox ', valor: 2500, foto: 'foto.jpg', usuarioIdusuario: 2),
-  ProdutoModel(idproduto: 0, nome: 'Microondas', descricao: 'Bem espaçosa, é de inox ', valor: 500, foto: 'foto.jpg', usuarioIdusuario: 2),
-  ProdutoModel(idproduto: 0, nome: 'Garrafa', descricao: 'Bem pequena para caber na sua bolsa', valor: 50, foto: 'foto.jpg', usuarioIdusuario: 2),
-  ProdutoModel(idproduto: 0, nome: 'Teclado', descricao: 'Teclado mecânico, switch red', valor: 2500, foto: 'foto.jpg', usuarioIdusuario: 2),
-  ProdutoModel(idproduto: 0, nome: 'Mouse', descricao: 'Muito rápido', valor: 2500, foto: 'foto.jpg', usuarioIdusuario: 2),
-];
+List<ProdutoModel> listaProdutos = [];
 
 class ProdutoController extends ChangeNotifier{
   int id = 0;
@@ -15,14 +11,27 @@ class ProdutoController extends ChangeNotifier{
   String descricao = '';
   double valor = 0;
   String foto = '';
+  List filtrada = [];
+  List<UsuarioModel>?usuario;
+  List<bool> registrado = List<bool>.filled(listaProdutos.length, false);
   
+  ProdutoController(){
+    getUsuario();
+  }
 
   addProduto(){
-    print('---------- passei no controller');
     ProdutoModel produto = ProdutoModel(idproduto: id, nome: nome, descricao: descricao, valor: valor, foto: foto, usuarioIdusuario: 1);
     id++;
     listaProdutos.add(produto);
     print(listaProdutos[0]);
     notifyListeners();
   }
+
+  getUsuario()async{
+    usuario = await UsuarioService().getUsuario();
+  }
+  produtoRegistrado(){
+    // filtrada = listaProdutos.where((element) => element.idproduto == usuario![0].produtos[0].idproduto);
+  }
+
 }
