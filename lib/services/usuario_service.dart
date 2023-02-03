@@ -8,12 +8,12 @@ class UsuarioService{
   Future<List<UsuarioModel>> getUsuario() async{
     var response = await http.get(Uri.parse('https://apivitahealth.azurewebsites.net/api/Usuarios/1'));
     if(response.statusCode == 200){
-      var json = response.body;
-      print('KGe: json array ${jsonDecode(json)['value']}');
-      var agoraVai = jsonDecode(json)['value'];
-      var sera = jsonEncode(agoraVai);
-      print('----milyyyyyy $sera');
-      return usuarioFromJson(sera);
+
+      var jsonObject = response.body;
+      var lista = jsonDecode(jsonObject)['value'];
+      var jsonLista = jsonEncode(lista);
+
+      return usuarioFromJson(jsonLista);
     }else{
       throw Exception('Falha ao carregar api usuario');
     }
