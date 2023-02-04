@@ -1,10 +1,15 @@
+import 'dart:async';
+
 import 'package:compras_vita_health/controllers/produto_controller.dart';
 import 'package:compras_vita_health/models/produto_model.dart';
 import 'package:compras_vita_health/models/usuario_model.dart';
 import 'package:compras_vita_health/services/produto_service.dart';
 import 'package:compras_vita_health/services/usuario_service.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -20,11 +25,22 @@ class _HomePageState extends State<HomePage> {
   bool sucessConection = false;
   List<bool> cadastrado = [];
 
+  late StreamSubscription subscription;
+  bool isDeviceConnected = false;
+  bool isAlertSet = false;
+
   @override
   void initState() {
     super.initState();
     getListaProduto();
     getUsuario();
+    getConnectivity();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    subscription.cancel();
   }
 
   getListaProduto()async{
@@ -57,6 +73,42 @@ class _HomePageState extends State<HomePage> {
       }
     }
   }
+
+  getConnectivity() => subscription = Connectivity().onConnectivityChanged.listen(
+    (ConnectivityResult result) async{
+      isDeviceConnected = await InternetConnectionChecker().hasConnection;
+      if(!isDeviceConnected && isAlertSet ==false){
+        showDialogBox();
+        setState(() {
+          isAlertSet = true;
+        });
+      }
+    }
+  );
+
+  showDialogBox() => showCupertinoDialog(
+    context: context, 
+    builder: (context) {
+      return CupertinoAlertDialog(
+        title: Text('Falha ao se conectar com a internet'),
+        actions: [
+          TextButton(
+            onPressed: () async{
+              Navigator.pop(context, 'cu');
+              isDeviceConnected = await InternetConnectionChecker().hasConnection;
+              if (!isDeviceConnected) {
+                showDialogBox();
+                setState(() {
+                  isAlertSet = true;
+                });
+              }
+            }, 
+            child: Text('Ok')
+          ),
+        ],
+      );
+    },
+  ); 
   
   @override
   Widget build(BuildContext context) {
