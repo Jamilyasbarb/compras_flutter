@@ -157,7 +157,7 @@ class _HomePageState extends State<HomePage> {
                                 side: BorderSide(
                                   color: Theme.of(context).colorScheme.primary,
                                 ),
-                                borderRadius: BorderRadius.circular(10)
+                                borderRadius: BorderRadius.circular(30)
                               ),
                               elevation: 7,
                               child: Column(
@@ -170,7 +170,7 @@ class _HomePageState extends State<HomePage> {
                                       children: [
                                         Flexible(
                                           flex: 1,
-                                          child: Image.asset('assets/images/fogao.jpeg')
+                                          child: Image.asset('assets/images/icone.png', width: 150, )
                                         ),
                                         Flexible(
                                           flex: 1,
